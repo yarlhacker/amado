@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tinymce',
     'website.apps.WebsiteConfig',
+    'service.apps.ServiceConfig',
     
 ]
 
