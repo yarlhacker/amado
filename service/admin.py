@@ -53,8 +53,14 @@ class ArticleAdmin(admin.ModelAdmin):
             return mark_safe(f'<img src="{obj.image.url}" style="height:50px; width:100px">')
         else:
             return '_'
-        
-
     images_view.short_description = 'Aperçu des images' # 
+
+
+@admin.register(models.Cart)
+class CartAdmin(admin.ModelAdmin):
+
+    list_display = ('total','date_add', 'date_update', 'status')
+    ordering = ['-date_add']
+    list_editable = ('status',)
 
 # Register your models here.

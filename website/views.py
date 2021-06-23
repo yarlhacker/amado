@@ -2,6 +2,7 @@ from django.core.paginator import Paginator , PageNotAnInteger, EmptyPage
 from django.shortcuts import render , get_object_or_404
 from service import models as models_service
 from . import models
+from website.cart import Cart 
 
 
 def index(request):
@@ -14,8 +15,10 @@ def index(request):
 
     return render(request, 'index.html',locals())
 
-def cart(request):
+def cart_detail(request):
+    cart =  Cart(request)
     is_cart =True
+    
     return render(request, 'cart.html',locals())
 
 def checkout(request):

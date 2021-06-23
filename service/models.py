@@ -56,6 +56,16 @@ class Article(Base):
         verbose_name_plural = 'Articles'
 
 
+class Cart(Base):
+    article = models.ManyToManyField('service.Article', blank=True)
+    total = models.DecimalField(max_digits=100, decimal_places=2, default=0.00)
 
+
+    def __str__(self):
+            return self.total
+    
+    class Meta:
+        verbose_name = 'Cart'
+        verbose_name_plural = 'Carts'
     
     
