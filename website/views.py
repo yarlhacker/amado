@@ -11,7 +11,7 @@ def index(request):
         articles = models_service.Article.objects.filter(status=True)
     else:
         articles = models_service.Article.objects.filter(categorie__nom= category)
-   
+
     return render(request, 'index.html',locals())
 
 def cart(request):
@@ -59,4 +59,3 @@ def search(request):
         
     return render(request ,'index.html', locals())  
 # Create your views here.
- 

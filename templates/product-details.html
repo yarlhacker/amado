@@ -94,6 +94,7 @@
 
                             <!-- Add to Cart Form -->
                             <form class="cart clearfix" method="post">
+                            {% csrf_token %}
                                 <div class="cart-btn d-flex mb-50">
                                     <p>Qty</p>
                                     <div class="quantity">
@@ -102,7 +103,7 @@
                                         <span class="qty-plus" onclick="var effect = document.getElementById('qty'); var qty = effect.value; if( !isNaN( qty )) effect.value++;return false;"><i class="fa fa-caret-up" aria-hidden="true"></i></span>
                                     </div>
                                 </div>
-                                <button type="submit" name="addtocart" value="5" class="btn amado-btn">Add to cart</button>
+                                <button  name="addtocart" @click.prevent="addtocart({{ article.id }})" value="5" class="btn amado-btn">Add to cart</button>
                             </form>
 
                         </div>
@@ -118,7 +119,48 @@
 {% block scripts %}
     
     <script>
-           
+        var apps = new Vue({
+
+            el : '#apps',
+            delimieters : ['%{','}'],
+            data () {   
+                        return {
+
+                        }
+            
+            },
+            mounted () {
+                console.log('Mounted');
+            },
+            methods : {
+
+                addtocart(product_id){
+                    console.log("product_id" , product_id);
+
+                    var data = {"product_id": product_id , "update" : false};
+
+                    fetch('api/api_add_to_cart' , {
+
+                        method :'POST',
+                        headers:{
+                            'Content-Type' : 'api/aplication/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        credentials : 'same-origin',
+                        body : JSON.stringify(data)
+                    })
+                    .then((response) => {
+                        
+                        console.log(response)
+                    })
+                    .catch(function (error) {
+                        console.log('error 2');
+                    })
+                }
+            },
+
+
+        })
         
     </script>
 
