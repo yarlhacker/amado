@@ -55,5 +55,7 @@ class Article(Base):
         verbose_name = 'Article'
         verbose_name_plural = 'Articles'
 
+
+
     
     

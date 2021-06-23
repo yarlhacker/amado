@@ -10,7 +10,7 @@
     <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
     <!-- Title  -->
-    <title>Amado - Furniture Ecommerce Template | Home</title>
+    <title>{% block title %}  {% endblock %}Amado - Furniture Ecommerce</title>
 
     <!-- Favicon  -->
     <link rel="icon" href="{% static 'img/core-img/favicon.ico' %}">
@@ -31,8 +31,8 @@
             <div class="row">
                 <div class="col-12">
                     <div class="search-content">
-                        <form action="#" method="get">
-                            <input type="search" name="search" id="search" placeholder="Type your keyword...">
+                        <form action="{% url 'search'%}" method="get">
+                            <input type="search" name="search" id="search" placeholder="Type your keyword..." >
                             <button type="submit"><img src="{% static 'img/core-img/search.png' %}" alt=""></button>
                         </form>
                     </div>
@@ -61,15 +61,32 @@
             </div>
             <!-- Logo -->
             <div class="logo">
-                <a href="{% url 'index' %}"><img src="{% static 'img/core-img/logo.png' %}" alt=""></a>
+                <a href="{% url 'index' %}"><img src="{{website.logo_site.url}}" alt="{{website.nom_site}}"></a>
             </div>
             <!-- Amado Nav -->
             <nav class="amado-nav">
                 <ul>
-                    <li class="active"><a href="{% url 'index' %}">Home</a></li>
-                    <li><a href="{% url 'shop' %}">Shop</a></li>
-                    <li><a href="{% url 'cart' %}">Cart</a></li>
-                    <li><a href="{% url 'checkout' %}">Checkout</a></li>
+                    {% if is_index %}
+                        <li class="active"><a href="{% url 'index' %}">Home</a></li>
+                    {% else %}
+                        <li ><a href="{% url 'index' %}">Home</a></li>
+                    {% endif %}
+                    {% if is_shop %}
+                        <li class="active"><a href="{% url 'shop' %}">Shop</a></li>
+                    {% else %}
+                        <li><a href="{% url 'shop' %}">Shop</a></li>    
+                    {% endif %}
+                    {% if is_cart %}
+                        <li class="active"><a href="{% url 'cart' %}">Cart</a></li>
+                    {% else %}
+                        <li><a href="{% url 'cart' %}">Cart</a></li>
+                    {% endif %}
+                    {% if is_checkout %}
+                        <li class="active"><a href="{% url 'checkout' %}">Checkout</a></li>
+                    {% else %}
+                        <li><a href="{% url 'checkout' %}">Checkout</a></li>
+                    {% endif %}
+                    
                 </ul>
             </nav>
             <!-- Button Group -->
@@ -108,8 +125,7 @@
                 <!-- Newsletter Text -->
                 <div class="col-12 col-lg-6 col-xl-7">
                     <div class="newsletter-text mb-100">
-                        <h2>Subscribe for a <span>25% Discount</span></h2>
-                        <p>Nulla ac convallis lorem, eget euismod nisl. Donec in libero sit amet mi vulputate consectetur. Donec auctor interdum purus, ac finibus massa bibendum nec.</p>
+                        {{ config.description_newsletter|safe}}
                     </div>
                 </div>
                 <!-- Newsletter Form -->
@@ -139,7 +155,7 @@
                         </div>
                         <!-- Copywrite Text -->
                         <p class="copywrite"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> {{config.copyrigths}} <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
                     </div>
                 </div>
@@ -152,18 +168,43 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#footerNavContent" aria-controls="footerNavContent" aria-expanded="false" aria-label="Toggle navigation"><i class="fa fa-bars"></i></button>
                                 <div class="collapse navbar-collapse" id="footerNavContent">
                                     <ul class="navbar-nav ml-auto">
-                                        <li class="nav-item active">
-                                            <a class="nav-link" href="{% url 'index' %}">Home</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="{% url 'shop' %}">Shop</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="{% url 'cart' %}">Cart</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="{% url 'checkout' %}">Checkout</a>
-                                        </li>
+                                        {% if is_index %}
+                                            <li class="nav-item active">
+                                                <a class="nav-link" href="{% url 'index' %}">Home</a>
+                                            </li>
+                                        {% else %}
+                                                <li class="nav-item ">
+                                                    <a class="nav-link" href="{% url 'index' %}">Home</a>
+                                                </li>
+                                        {% endif %}
+                                       
+                                        {% if is_shop %}
+                                            <li class="nav-item active">
+                                                <a class="nav-link" href="{% url 'shop' %}">Shop</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{% url 'shop' %}">Shop</a>
+                                            </li>
+                                        {% endif %}
+                                        {% if is_cart %}
+                                            <li class="nav-item active">
+                                                <a class="nav-link" href="{% url 'cart' %}">Cart</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{% url 'cart' %}">Cart</a>
+                                            </li>
+                                        {% endif %}
+                                        {% if is_checkout %}
+                                            <li class="nav-item active">
+                                                <a class="nav-link" href="{% url 'checkout' %}">Checkout</a>
+                                            </li>
+                                        {% else %}
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{% url 'checkout' %}">Checkout</a>
+                                            </li>
+                                        {% endif %}
                                     </ul>
                                 </div>
                             </nav>
@@ -187,6 +228,13 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <!-- Active js -->
     <script src="{% static 'js/active.js' %}"></script>
 
+    
+
 </body>
 
 </html>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    {% block scripts %}
+    
+    {% endblock %}

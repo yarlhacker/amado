@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% block title %} Shop | {% endblock %}
 {% load static %}
 {% block content %}
 
@@ -13,7 +14,9 @@
                 <div class="catagories-menu">
                     <ul>
                         {% for categorie in categories %}
-                            <li class="" ><a href="bg-{{categorie.id}}">{{categorie.nom}}</a></li>
+                            
+                                <li class='active'><a  href= "{% url 'shop'%}?category={{categorie.nom}}">{{categorie.nom}}</a></li>
+                       
                         {% endfor %}
                     </ul>
                 </div>
@@ -98,7 +101,7 @@
                         <div class="product-topbar d-xl-flex align-items-end justify-content-between">
                             <!-- Total Products -->
                             <div class="total-products">
-                                <p>Showing 1-8 0f 25</p>
+                                <p>Showing {{articles_albums.number}} 0f {{articles_albums.paginator.num_pages}}</p>
                                 <div class="view d-flex">
                                     <a href="#"><i class="fa fa-th-large" aria-hidden="true"></i></a>
                                     <a href="#"><i class="fa fa-bars" aria-hidden="true"></i></a>
@@ -135,8 +138,8 @@
                 <div class="row">
 
                     <!-- Single Product Area -->
-                    {% for article in articles %}
-                        <div class="col-12 col-sm-6 col-md-12 col-xl-6">
+                    {% for article in articles_albums %}
+                        <div class="col-12 col-sm-6 col-md-12 col-xl-6 filter-{{article.categorie.id}}">
                             <div class="single-product-wrapper">
                                 <!-- Product Image -->
                                 <div class="product-img">
@@ -171,6 +174,8 @@
                                 </div>
                             </div>
                         </div>
+                    {% empty %}
+                        <h1> No Article for The Category </h1>
                     {% endfor %}
                 </div>
 
@@ -179,11 +184,17 @@
                         <!-- Pagination -->
                         <nav aria-label="navigation">
                             <ul class="pagination justify-content-end mt-50">
-                                <li class="page-item active"><a class="page-link" href="#">01.</a></li>
-                                <li class="page-item"><a class="page-link" href="#">02.</a></li>
-                                <li class="page-item"><a class="page-link" href="#">03.</a></li>
-                                <li class="page-item"><a class="page-link" href="#">04.</a></li>
-                            </ul>
+                                {% if  articles_albums.has_previous %}
+                                
+                                <li class="page-item"><a class="page-link" href="?page={{articles_albums.previous_page_number}}">1.</a></li>
+                                {% endif%}
+                                
+                                <li class="page-item active"><a class="page-link" href="?page={{articles_albums.page_number}}">{{articles_albums.number}}.</a></li>
+                                {% if  articles_albums.has_next %}
+                                
+                                <li class="page-item"><a class="page-link" href="?page={{articles_albums.next_page_number}}">2.</a></li>
+                                {% endif%}
+                                
                         </nav>
                     </div>
                 </div>
