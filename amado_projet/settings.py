@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'tinymce',
     'website.apps.WebsiteConfig',
     'service.apps.ServiceConfig',
-    
+    'checkout.apps.CheckoutConfig',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +71,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'amado_projet.context_processors.website',
+
             ],
         },
     },

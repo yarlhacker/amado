@@ -16,8 +16,17 @@ def index(request):
     return render(request, 'index.html',locals())
 
 def cart_detail(request):
+    is_cart =True   
     cart =  Cart(request)
-    is_cart =True
+    productsstring = ''
+
+    for item in cart:
+        product = item['product']
+        url = '/%s/%s/' % (product.categorie.id, product.id)
+        b = "{'id': '%s', 'title': '%s', 'price': '%s', 'quantity': '%s', 'total_price': '%s'}," % (product.id, product.nom, product.prix, item['quantity'], item['total_price'])
+
+        productsstring = productsstring + b
+    
     
     return render(request, 'cart.html',locals())
 
@@ -29,10 +38,12 @@ def checkout(request):
 def shop(request):
     is_shop =True
     category = request.GET.get('category')
-    if not category :
+    if not category:
         articles = models_service.Article.objects.filter(status=True)
     else:
-        articles = models_service.Article.objects.filter(categorie__nom__icontains = category)
+        cat = get_object_or_404(models_service.Categorie, id=category)
+        articles = cat.categorieArticle.all()
+        cat_id = cat.id
 
     categories = models_service.Categorie.objects.filter(status=True)
     paginator = Paginator(articles,4)
@@ -54,11 +65,13 @@ def product_detail(request,id):
 
 
 def search(request):
-    query = request.GET.get('query')
+    query = request.GET.get('search')
     if not query:
-        articles = models_service.Article.objects.all
+        print('1', query)
+        articles = models_service.Article.objects.all()
     else:
-        articles = models_service.Article.objects.filter(categorie__nom__icontains=query)
+        print('2', query)
+        articles = models_service.Article.objects.filter(nom__icontains=query)
         
     return render(request ,'index.html', locals())  
 # Create your views here.

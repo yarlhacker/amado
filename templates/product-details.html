@@ -133,7 +133,6 @@
                 console.log('Mounted');
             },
             methods : {
-
                 addtocart(product_id){
                     console.log("product_id" , product_id);
 
@@ -143,8 +142,6 @@
                                 'quantity' : 1 
                                 };
                                 
-
-
                     fetch("{% url 'api_add_to_cart' %}", {
 
                         method :'POST',
