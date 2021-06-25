@@ -5,7 +5,7 @@ class Base(models.Model):
 
     date_add = models.DateField(auto_now_add=True)
     date_update = models.DateField(auto_now=True)
-    status = models.BooleanField()
+    status = models.BooleanField(default=True)
 
     class Meta:
 

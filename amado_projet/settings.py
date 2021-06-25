@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'tinymce',
     'website.apps.WebsiteConfig',
     'service.apps.ServiceConfig',
-    
+    'checkout.apps.CheckoutConfig',
 ]
 
 MIDDLEWARE = [

@@ -7,6 +7,7 @@ from website.cart import Cart
 
 def index(request):
     is_index =True
+    cart =  Cart(request)
     category = request.GET.get('category')
     if not category :
         articles = models_service.Article.objects.filter(status=True)
@@ -16,17 +17,29 @@ def index(request):
     return render(request, 'index.html',locals())
 
 def cart_detail(request):
+    is_cart =True   
     cart =  Cart(request)
-    is_cart =True
+
+    productsstring = ''
+
+    for item in cart:
+        product = item['product']
+        url = '/%s/%s/' % (product.categorie.id, product.id)
+        b = "{'id': '%s', 'title': '%s', 'price': '%s', 'quantity': '%s', 'total_price': '%s'}," % (product.id, product.nom, product.prix, item['quantity'], item['total_price'])
+
+        productsstring = productsstring + b
+    
     
     return render(request, 'cart.html',locals())
 
 def checkout(request):
+    cart =  Cart(request)
     is_checkout =True
     return render(request, 'checkout.html',locals())
 
 
 def shop(request):
+    cart =  Cart(request)
     is_shop =True
     category = request.GET.get('category')
     if not category :
@@ -47,6 +60,7 @@ def shop(request):
     return render(request, 'shop.html', locals())
 
 def product_detail(request,id):
+    cart =  Cart(request)
 
     article = get_object_or_404(models_service.Article , id=id)
     images = models_service.Image.objects.filter(status=True)
