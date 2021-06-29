@@ -1,8 +1,20 @@
 from django.core.paginator import Paginator , PageNotAnInteger, EmptyPage
 from django.shortcuts import render , get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from service import models as models_service
+from django.conf import settings 
 from . import models
 from website.cart import Cart 
+import json
+from django.http import JsonResponse
+
+
+def is_email(email):
+    try:
+        validate_email(email)
+        return True
+    except:
+        return False
 
 
 def index(request):
@@ -18,17 +30,18 @@ def index(request):
 def cart_detail(request):
     is_cart =True   
     cart =  Cart(request)
+    pub_key = settings.STRIPE_API_KEY_PUBLIC
     productsstring = ''
 
     for item in cart:
         product = item['product']
         url = '/%s/%s/' % (product.categorie.id, product.id)
-        b = "{'id': '%s', 'title': '%s', 'price': '%s', 'quantity': '%s', 'total_price': '%s'}," % (product.id, product.nom, product.prix, item['quantity'], item['total_price'])
+        b = "{'id': '%s', 'title': '%s', 'price': '%s', 'quantity': '%s', 'total_price': '%s','photo': '%s'}," % (product.id, product.nom, product.prix, item['quantity'], item['total_price'],product.image_principal.url)
 
         productsstring = productsstring + b
     
     
-    return render(request, 'cart.html',locals())
+    return render(request, 'cart.html',locals() ,)
 
 def checkout(request):
     is_checkout =True
@@ -74,4 +87,28 @@ def search(request):
         articles = models_service.Article.objects.filter(nom__icontains=query)
         
     return render(request ,'index.html', locals())  
+
+@csrf_exempt
+def newsletter(request):
+    msg, success = '', False
+
+    if request.method == 'POST':
+        email = json.loads(request.POST.get('email'))
+        if email.isspace():
+            msg = 'veuillez remplir ce champ avant de le soumettre !!!'
+        elif is_email(email):
+            msg = 'Email invalide'
+        else:
+            news, created = models.Newsletter.objects.get_or_create(email=email)
+            news.save()
+            if created:
+                msg = 'email enregistrer avec success'
+            else:
+                msg = 'Vous etes deja inscrit'
+            success = True
+    datas = {
+        'success': success,
+        'msg': msg
+    }
+    return JsonResponse(datas, safe=False)
 # Create your views here.

@@ -135,7 +135,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row" id='apps'>
 
                     <!-- Single Product Area -->
                     {% for article in articles_albums %}
@@ -168,7 +168,7 @@
                                             <i class="fa fa-star" aria-hidden="true"></i>
                                         </div>
                                         <div class="cart">
-                                            <a href="#" data-toggle="tooltip" data-placement="left" title="Add to Cart"><img src="{% static 'img/core-img/cart.png' %}" alt=""></a>
+                                            <a href="#" @click.prevent="addtocart({{ article.id }})" data-toggle="tooltip" data-placement="left" title="Add to Cart"><img src="{% static 'img/core-img/cart.png' %}" alt=""></a>
                                         </div>
                                     </div>
                                 </div>
@@ -205,3 +205,58 @@
 
 {% endblock content %}
 
+{% block scripts %}
+    
+    <script>
+        var apps = new Vue({
+
+            el : '#apps',
+            delimieters : ['%{','}'],
+            store :store,
+            data () {   
+                        return {
+
+                        }
+            
+            },
+            mounted () {
+                console.log('Mounted');
+            },
+            methods : {
+                addtocart(product_id){
+                    console.log("product_id" , product_id);
+
+                    var data = {
+                                'product_id': product_id ,
+                                'update' : false,
+                                'quantity' : 1 
+                                };
+                                
+                    fetch("{% url 'api_add_to_cart' %}", {
+
+                        method :'POST',
+                        headers:{
+                            'Content-Type' : 'api/aplication/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        credentials : 'same-origin',
+                        body : JSON.stringify(data)
+                    })
+                    .then((response) => {
+                        
+                        console.log(response),
+                        store.commit('increment', 1);   
+                    })
+                    .catch(function (error) {
+                        console.log('error 2');
+                        console.log(error);
+                    })
+                }
+            },
+
+
+        })
+        
+    </script>
+
+{% endblock %}

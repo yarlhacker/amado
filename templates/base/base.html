@@ -95,8 +95,8 @@
                 <a href="#" class="btn amado-btn active">New this week</a>
             </div>
             <!-- Cart Menu -->
-            <div class="cart-fav-search mb-100">
-                <a href="{% url 'cart' %}" class="cart-nav"><img src="{% static 'img/core-img/cart.png' %}" alt=""> Cart <span>({{cart.get_total_length}})</span></a>
+            <div class="cart-fav-search mb-100"  id="navbarapp">
+                <a href="{% url 'cart' %}" class="cart-nav"><img src="{% static 'img/core-img/cart.png' %}" alt=""> Cart <span>(%{numItems})</span></a>
                 <a href="#" class="fav-nav"><img src="{% static 'img/core-img/favorites.png' %}" alt=""> Favourite</a>
                 <a href="#" class="search-nav"><img src="{% static 'img/core-img/search.png' %}" alt=""> Search</a>
             </div>
@@ -129,11 +129,12 @@
                     </div>
                 </div>
                 <!-- Newsletter Form -->
-                <div class="col-12 col-lg-6 col-xl-5">
+                <div class="col-12 col-lg-6 col-xl-5" id='newsletters'>
                     <div class="newsletter-form mb-100">
-                        <form action="#" method="post">
-                            <input type="email" name="email" class="nl-email" placeholder="Your E-mail">
-                            <input type="submit" value="Subscribe">
+                        <form action="{% url 'newsletter' %}" method="POST">
+                        {% csrf_token %}
+                            <input type="email" name="email" v-model="email"class="nl-email" placeholder="Your E-mail">
+                            <input type="submit" @click.prevent="newsletters" value="Subscribe">
                         </form>
                     </div>
                 </div>
@@ -228,12 +229,107 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> {{con
     <!-- Active js -->
     <script src="{% static 'js/active.js' %}"></script>
 
+
     
 
 </body>
 
 </html>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    {% block scripts %}
-    
-    {% endblock %}
+<script src="{% static 'js/vuex.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+        var store = new Vuex.Store({
+				state: {
+					numItems: {{ cart.get_total_length }},
+					totalCost: {{ cart.get_total_cost }}
+				},
+				mutations: {
+					increment(state, quantity) {
+						state.numItems += quantity;
+					},
+					changeTotalCost(state, newCost) {
+						state.totalCost += newCost
+					}
+				}   
+			});
+        var navbarapp= new Vue ({
+        el :'#navbarapp',
+        delimiters : ['%{','}'],
+        store : store ,
+        computed: {
+					numItems: function() {
+						return store.state.numItems
+					}
+				},
+        });
+</script>
+
+{% block scripts %}
+
+{% endblock %}
+  <script>
+
+    new Vue({
+        el: '#newsletters',
+        data:{
+            email: ''
+        },
+        delimiters:['%{', '}'],
+        methods:{
+            newsletters(){
+                if(!this.email){
+                    swal.fire({
+                        icon:'error',
+                        text: 'veuillez remplir ce champ avant de le soumettre !!!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+                else if (!/(\w\.?)+@(\w\.?)+\.[A-Za-z]{2,3}/.test(this.email)){
+                    swal.fire({
+                        icon: 'error',
+                        text: 'Email invalide',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                }
+                else{
+
+                    let form = new FormData()
+                    form.append('email', JSON.stringify(this.email))
+
+                    axios.defaults.xsrfCookieName = 'XSRF-TOKEN'
+                    axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN'
+                    axios.post("{% url 'newsletter' %}", form)
+                    .then((response) =>{
+                        if(response.data.success){
+                            swal.fire({
+                                icon:'success',
+                                text: response.data.msg,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                        }
+                        else{
+                            swal.fire({
+                                icon:'error',
+                                text: response.data.msg,
+                                showConfirmButton: false,
+                                timer: 2000
+                            })
+                        }
+                    })
+                    .catch((e) => {
+                        console.log(e)
+                    })
+                }
+            }
+        }
+
+    })
+
+    </script>
+
+

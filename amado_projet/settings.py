@@ -9,6 +9,9 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+STRIPE_API_KEY_PUBLIC = "pk_test_51J6eTWDcY8NrNNZEQYJnjjctyHBygjPJBfRgIumEfJwuh1KrtVBFrKMcXI2OParbkc7reKyzUS4HPDlleyLvA2VZ00YnLDUS9I"
+
+STRIPE_API_KEY_PRIVE = "sk_test_51J6eTWDcY8NrNNZEMbEve4oL3WdJRyUGXxKJxB2C2wHMF3jsavuvFyL7mBp29pLiQM05lm8viKUfsIeBRHvWyDHs00qgGB6YLw"
 
 from pathlib import Path
 

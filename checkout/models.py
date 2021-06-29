@@ -6,24 +6,18 @@ from website.models import Base
 class Checkout(Base):
 
 
-    CHOIX = (
-        ('F', 'France'),
-        ('C', 'Canada'),
-        ('G', 'Germany'),
-    )
-
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=255)
     company = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
-    pays = models.CharField(max_length=1, choices=CHOIX)
+    pays = models.CharField(max_length=255)
     adresse = models.CharField(max_length=255)
     town = models.CharField(max_length=255)
     zipcode = models.CharField(max_length=255)
     phone = models.CharField(max_length=255)
     commentaire =  models.TextField()
-    create_acount = models.BooleanField(default=False)
-    ship_address= models.BooleanField(default=False)
+    paid = models.BooleanField(default=False)
+    paid_amount= models.FloatField(blank=True, null=True)
 
 
     def __str__(self):

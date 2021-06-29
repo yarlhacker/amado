@@ -97,7 +97,7 @@
 
 {% endblock content %}
 {% block scripts %}
-    
+    <script type="application/javascript"  src="https://js.stripe.com/v3/"></script>
     <script>
         var apps = new Vue({
 
@@ -125,16 +125,142 @@
                 console.log('Mounted');
             },
             methods : {
+               /* buy() {
+
+                    var stripe = Stripe('{{pub_key}}');
+
+                    fetch("{% url 'create_checkout_session' %}", {
+
+                        method :'POST',
+                        headers:{
+                            'Content-Type' : 'aplication/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        credentials : 'same-origin',
+                    })
+                    .then(function(response){
+
+                        return response.json()
+                    })
+                    .then(function(session){
+
+                        return stripe.redirectToCheckout({sessionId : session.session.id})
+                     })
+                     .then(function(result){
+
+                        if (result.error){
+                            alert(result.error.message)
+                        }
+                     })
+                     .catch(function(error) {
+                        console.log('Error:', error);
+                    });
+
+                },*/
                 submitFrom(){
 
-                    console.log(" ismela");
+                    var data ={
+
+                        nom : this.nom,
+                        prenom : this.prenom,
+                        email: this.email,
+                        pays : this.pays,
+                        town: this.town,
+                        phone : this.phone,
+                        zipcode: this.zipcode,
+                        company : this.company,
+                        adresse : this.adresse,
+                        commentaire : this.commentaire,
+                    };
+                    if(!this.email){
+                    swal.fire({
+                        icon:'error',
+                        text: 'veuillez remplir Email !!!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                    }
+                    else if(!this.nom){
+                    swal.fire({
+                        icon:'error',
+                        text: 'veuillez saissir votre nom !!!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                    }
+                    else if(!this.prenom){
+                    swal.fire({
+                        icon:'error',
+                        text: 'veuillez saissir votre prenom !!!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                    }
+                    else if(!this.adresse){
+                    swal.fire({
+                        icon:'error',
+                        text: 'veuillez saissir votre adresse !!!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                    }
+                     else if(!this.town){
+                    swal.fire({
+                        icon:'error',
+                        text: 'veuillez saissir votre ville !!!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                    }
+                     else if(!this.zipcode){
+                    swal.fire({
+                        icon:'error',
+                        text: 'veuillez saissir votre zipcode !!!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    })
+                    }
+                    else if (!/(\w\.?)+@(\w\.?)+\.[A-Za-z]{2,3}/.test(this.email)){
+                        swal.fire({
+                            icon: 'error',
+                            text: 'Email invalide',
+                            showConfirmButton: false,
+                            timer: 2000
+                        })
+                    }
+                    else{
+
+                    fetch("{% url 'api_checkout' %}", {
+
+                        method :'POST',
+                        headers:{
+                            'Content-Type' : 'api/aplication/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        credentials : 'same-origin',
+                        body : JSON.stringify(data)
+                    })
+                    .then((response) => {
+                       swal.fire({
+                                icon:'success',
+                                title:'Felicitation',
+                                text: 'Payement effectue',
+                                showConfirmButton: false,
+                                timer: 5000
+                            })
+
+                        window.location.href = '/';
+                    })
+                    .catch(function (error) {
+                        console.log('error 2');
+                        console.log(error);
+
+                    })
+                    console.log(data);
                 }
-
-
-                    
-
             }
                 
+                    }
         })
         
     </script>
